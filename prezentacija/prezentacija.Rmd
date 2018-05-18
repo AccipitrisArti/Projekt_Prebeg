@@ -1,0 +1,45 @@
+---
+title: "Seminarska naloga pri predmetu Izbrane teme iz analize podatkov"
+author: "Anže Marinko"
+output: html_document
+---
+
+# Prebeg strank
+
+Sem Anže Marinko, študent 3. letnika finančne matematike na Fakulteti za matematiko in fiziko na Univerzi v Ljubljani. Pri tem projektu bom analiziral podatke o prebegih strank telekomunikacijskega operaterja Orange. Projekt sem naredil v okviru predmeta Izbrane teme iz analize podatkov.
+
+***
+
+## Podatkovna množica
+
+```{r uvoz, echo=FALSE, message=FALSE, warning=FALSE}
+source("napovedovanje.r", encoding = "UTF-8")
+```
+
+Učna podatkovna množica vsebuje 40.000 primerov strank ponudnika storitev mobilne telefonuje Orange. Dobrih 7% zajetih strank (2.938) je "prebeglo" h konkurenčnim podjetjem, ostalih 93% (37.062) jih je ostalo pri podjetju Orange. Vsako stranko opisuje 77 spremenljivk s skritim, neznanim pomenom; od tega je prvih 42 kvantitativnih (Var6-Var189), ostalih 35 pa kvalitativnih (Var192-churn). Edino zadnja in hkrati ciljna spremenljivka ima jasen pomen ter se nanaša na prebeg (angl. churn) stranke. Podatkovno množico zaznamuje veliko manjkajočih podatkov; tako je npr. 74% vrednosti spremenljivke Var194 neznanih; povprečen delež manjkajočih vrednosti na spremenljivko je 12%.
+
+```{r razpredelnice, echo=FALSE, message=FALSE, warning=FALSE}
+head(trainData)
+```
+
+***
+
+## Naloga
+
+Zgradite napovedni model, ki napoveduje ali bo stranka prebegnila k konkurenci ali ne. Pri gradnji napovednega modela upoštevajte razlike med različnimi vrstami napovednih napak (spregled prebega stranke je gotovo slabši kot razglasitev stalne stranke za potencialnega prebežnika) ter neenakomerno porazdelitev primerov v razrede, kjer je le 7% prebežnikov.
+
+Najbolj pomembni kriteriji pri ocenjevanju seminarske naloge: izbira pristopov k obravnavi neenakomerne porazdelitve primerov v razrede in manjkajočih vrednosti ter različne vrste napovednih napak modela na tesni množici 10.000 strank.
+
+Poleg poročila o tem, kako ste zgradili napovedni model, za izbrani, najboljši napovedni model oddajte njegove napovedi ciljne spremenljivke na testni množici podatkov. To naj bo (csv) tabela z enim stolpcem, ki podaja napovedi v enakem vrstnem redu kot so razvrščeni primeri v testni množici. Oddana tabela lahko vsebuje tudi drugi stolpec, ki napove verjetnost prebega za podan testni primer.
+
+***
+
+## Referenca
+
+Podatkovni množici za to seminarsko nalogo sta pridobljeni iz učne podatkovne množice podatkovnega izziva konference KDD-2009; več o podatkovnem izzivu na naslovu http://www.kdd.org/kdd-cup/view/kdd-cup-2009
+
+# Zaključek
+
+Kot smo lahko opazili, so podatki zelo različno primerni za analizo. Izobrazba je že sama po sebi zelo odvisna od šolskega sistema v državi, zaposlenost pa se mi je za analizo zdela dosti primernejša. Pri projektu sem se seveda v prvi vrsti naučil veliko v povezavi s programom R, predvsem Shiny me je v samo delo najbolj potegnil. Naučil pa sem se tudi nekaj o iz podatkov vidnem stanju v Evropi glede mladih. Menim, da je stanje v mladinskem sektorju v Sloveniji zelo slabo, saj se država z nami premalo ukvarja in je še preveč stvari, ki so povezane z mladimi, premočno odvisnih od politike, ki pa ne dela nujno v prid vsem državljanom.
+
+***
