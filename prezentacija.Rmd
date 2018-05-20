@@ -13,7 +13,7 @@ Sem Anže Marinko, študent 3. letnika finančne matematike na Fakulteti za mate
 ## Podatkovna množica
 
 ```{r uvoz, echo=FALSE, message=FALSE, warning=FALSE}
-source("napovedovanje.r", encoding = "UTF-8")
+source("analiza-podatkov/napovedovanje.r", encoding = "UTF-8")
 ```
 
 Učna podatkovna množica vsebuje 40.000 primerov strank ponudnika storitev mobilne telefonuje Orange. Dobrih 7% zajetih strank (2.938) je "prebeglo" h konkurenčnim podjetjem, ostalih 93% (37.062) jih je ostalo pri podjetju Orange. Vsako stranko opisuje 77 spremenljivk s skritim, neznanim pomenom; od tega je prvih 42 kvantitativnih (Var6-Var189), ostalih 35 pa kvalitativnih (Var192-churn). Edino zadnja in hkrati ciljna spremenljivka ima jasen pomen ter se nanaša na prebeg (angl. churn) stranke. Podatkovno množico zaznamuje veliko manjkajočih podatkov; tako je npr. 74% vrednosti spremenljivke Var194 neznanih; povprečen delež manjkajočih vrednosti na spremenljivko je 12%.
