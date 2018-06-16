@@ -4,3 +4,9 @@
 
 source("analiza-podatkov/uvoz-in-transformacija.r", encoding = "UTF-8")
 
+# funkcije za preverjanje natančnosti, trainControl ...
+# napovedni modeli
+# izbira modela
+
+finalModel <- train(trainX, trainY, method = "knn",
+               tuneGrid = data.frame(k=3))
