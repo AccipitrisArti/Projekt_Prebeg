@@ -12,10 +12,8 @@
 ######### uvoz knjižnic #####
 library(readr)
 library(dplyr)
-library(caret)
 library(data.table)
 library(dummies)
-library(randomForest)
 library(smotefamily)
 
 ########## uvoz in normalizacija podatkov ####
@@ -56,7 +54,7 @@ dodajManjkajoce <- function(data) {
 ######### dodajanje naivnih spremenljivk ##########
 dodajNaivneSpremenljivke  <- function(data) {
   data <- data.table(dummy.data.frame(data))
-  # odstranimo nepotrebne dummy stolpce
+  # odstranimo nepotrebne dummy stolpce (funkcija je naredila nekaj stolpcev prevec)
   data <- data[,-c("LodobrenNE", "VznamkaALFA", "Scrna_listaNE",
   "Dcrna_listaNE","Strajanje_zaposlitveUPOKOJENEC", "SpostaBA-7", "SdrzavljanstvoALBANIA",                
   "Sdrzavljanstvo_euNE", "SDtipSVOBOD. POKL., TUJINA, D", "SDblokada_racunaNE", "SDinsolventnostNE",                      
@@ -96,7 +94,7 @@ odstraniNepotrebneSpremenljivke  <- function(data) {
   var <- diag(varCo)
   
   # korelacijska matrika:
-  ro <- t(varCo/var^(1/2))/var^(1/2)
+  # ro <- t(varCo/var^(1/2))/var^(1/2)
   # mogoče odstranimo kakšnega izmed stolpcev, ki so zelo korelirani
   # max(abs(ro[abs(ro)<0.999])) = 0.8999524
   # to je pri ro[50,51], zato odstranimo enega izmed njiju
@@ -106,9 +104,10 @@ odstraniNepotrebneSpremenljivke  <- function(data) {
 }
 
 ######### popravi razmerje ciljne spremenljivke #########
-popraviY <- function(data) {
+popraviY <- function(trainData) {
   # razmerje "DA": 60%, "NE": 40% preoblikuj na vsaj "DA": 55%, "NE": 45%
-  # SMOTE(data[,-62],data[,62], K=5) namesto na data delaj na trainData
+  trainData$Lodobren <- as.factor(trainData$Lodobren)
+  # SMOTE(trainData[,-62],trainData[,62], K=5)
   
   
   
@@ -116,7 +115,7 @@ popraviY <- function(data) {
   
   
   
-  return(data)
+  return(trainData)
 }
 
 ######### pogon vseh funkcij za uvoz in obdelavo podatkov #######
@@ -130,7 +129,7 @@ trainData <- podatki[!is.na(podatki$Lodobren)] %>%
   popraviY()
 
 ######### output ##########
-trainX <- trainData[, -1]
+trainX <- trainData[, -"Lodobren"]
 trainY <- trainData$Lodobren
-testX <- testData[, -1]
+testX <- testData[, -"Lodobren"]
 
