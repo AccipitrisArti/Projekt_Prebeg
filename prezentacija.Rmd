@@ -4,29 +4,13 @@ author: "Anže Marinko"
 output: html_document
 ---
 
-# Prebeg strank
+# Finančni zakup vozil (lizing)
 
 Sem Anže Marinko, študent 3. letnika finančne matematike na Fakulteti za matematiko in fiziko na Univerzi v Ljubljani. Pri tem projektu bom analiziral tveganje finančnega zakupa (lizing) vozil. Projekt sem naredil v okviru predmeta Izbrane teme iz analize podatkov.
 
 ***
 
 ## Podatkovna množica
-
-```{r uvoz, echo=FALSE, message=FALSE, warning=FALSE}
-source("analiza-podatkov/napovedovanje.r", encoding = "UTF-8")
-```
-
-
-Diskusija relevantnosti napovednih spremenljivk!
-
-Razlika med napakami tipa FP in FN, več kot 60% odobrenih predmetov!
-
-
-```{r razpredelnice, echo=FALSE, message=FALSE, warning=FALSE}
-head(trainData)
-```
-
-***
 
 Učna podatkovna množica vsebuje 6.062 predmetov zakupa (leasinga) vozil, ki jih je leta 2015 obravnavalo izbrano leasing podjetje v Sloveniji. Vsak predmet je opisan z enaintridesetimi (31) spremenljivkami, ki se nanašajo na lastnosti stranke (S), njenega delodajalca (SD), leasing predmeta (L), vozila (V) in njegovega dobavitelja (D):
 
@@ -62,9 +46,30 @@ Učna podatkovna množica vsebuje 6.062 predmetov zakupa (leasinga) vozil, ki ji
 (30) SDinsolventnost (Boolova): delodajalec stranke je insolventen;
 (31) SDcrna_lista (Boolova): delodajalec stranke je na črni listi neplačnikov.
 
-## Naloga
+
+```{r uvoz, echo=FALSE, message=FALSE, warning=FALSE}
+source("analiza-podatkov/napovedovanje.r", encoding = "UTF-8")
+```
+
+Nekaj o podatkih (manjkajočih, porazdelitvi ciljne spremenljivke ...)
+
+
+```{r razpredelnice, echo=FALSE, message=FALSE, warning=FALSE}
+head(trainData)
+```
+
+## Relevantnost napovednih spremenljivk
+
+
+***
+
+## Grajenje modelov
 
 Zgradite napovedni model, ki napoveduje ali bo za lizing predmet sklenjena pogodba ali ne. Pri merjenju in poročanju napake napovednega modela upoštevajte razlike med različnimi vrstami napovednih napak, saj izpad dohodkov zaradi nesklenjene dobre pogodbe je lahko drugačen od stroškov, ki nastanejo zaradi slabo sklenjene pogodbe zakupa. Upoštevajte tudi neenakomerno porazdelitev primerov v razrede, kjer je več kot 60% primerov bilo odobrenih.
+
+Razlika med napakami tipa FP in FN!
+
+## Predstavitev in napovedi končnega modela
 
 Poleg poročila o tem, kako ste zgradili napovedni model, za izbrani, najboljši napovedni model oddajte njegove napovedi ciljne spremenljivke na testni množici podatkov. To naj bo (csv) tabela z enim stolpcem, ki podaja napovedi v enakem vrstnem redu kot so razvrščeni primeri v testni množici. Oddana tabela lahko vsebuje tudi drugi stolpec, ki napove verjetnost sklenitve pogodbe za podan testni primer.
 

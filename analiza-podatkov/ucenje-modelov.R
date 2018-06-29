@@ -8,5 +8,6 @@ source("analiza-podatkov/uvoz-in-transformacija.r", encoding = "UTF-8")
 # napovedni modeli
 # izbira modela
 
-finalModel <- train(trainX, trainY, method = "knn",
-               tuneGrid = data.frame(k=3))
+finalModel <- randomForest(trainX, y=trainY, ntree=60, mtry=30,
+                           maxnodes = 300)
+plot(finalModel)
