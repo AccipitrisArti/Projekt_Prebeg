@@ -1,20 +1,22 @@
-# uvoz knjiznic, uvoz podatkov, normalizacija in
-# dodajanje manjkajocih podatkov
+# uvoz knjižnic, uvoz podatkov, normalizacija in
+# nadomeščanje manjkajocih podatkov, dodajanje naivnih
+# spremenljivk, odstranjevanje nepomembnih, popravljanje
+# razmerja pri ciljni spremenljivki
 #    outputi tega dela programa:
 #        trainX,
 #        trainY,
-#        testX,
-#        testY
+#        testX
 #
 # Anze Marinko, 27151124
 # Izbrane teme iz analize podatkov
 
-######### uvoz knjižnic #####
+t <- Sys.time()
+########## uvoz knjižnic ##################
 library(readr)
 library(dplyr)
 library(data.table)
 library(dummies)
-library(smotefamily)
+library(DMwR)
 
 ########## uvoz in normalizacija podatkov ####
 uvoziPodatke <- function() {
@@ -107,14 +109,8 @@ odstraniNepotrebneSpremenljivke  <- function(data) {
 popraviY <- function(trainData) {
   # razmerje "DA": 60%, "NE": 40% preoblikuj na vsaj "DA": 55%, "NE": 45%
   trainData$Lodobren <- as.factor(trainData$Lodobren)
-  # SMOTE(trainData[,-62],trainData[,62], K=5)
-  
-  
-  
-  
-  
-  
-  
+  trainData <- DMwR::SMOTE(Lodobren~.,trainData,k=5,
+                           perc.over = 30,perc.under=400)
   return(trainData)
 }
 
