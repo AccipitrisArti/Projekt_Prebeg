@@ -44,7 +44,7 @@ uvoziPodatke <- function() {
 ######### nadomeščanje manjkajočih podatkov ########
 dodajManjkajoce <- function(data) {
   # v Splacilni_indeks in Szapadlo_neplacano so manjkajoči podatki
-  manjka <- is.na(data[, c(12,13)])
+  manjka <- data.frame(m12=is.na(data[,12]), m13=is.na(data[,13]))
   # manjkajoce vrednosti v obeh stolpcih so v istih vrsticah (sum(manjka[,1]!=manjka[,2]) = 0)
   data[manjka[,1],12] <- mean(na.omit(data[[12]]))
   data[manjka[,2],13] <- mean(na.omit(data[[13]]))
@@ -102,15 +102,32 @@ odstraniNepotrebneSpremenljivke  <- function(data) {
   # to je pri ro[50,51], zato odstranimo enega izmed njiju
   data[, 51] <- NULL
   # v tej točki imamo zdaj 61 napovednih spremenljivk
+  colnames(data)<-c("VznamkaAUDI", "VznamkaBMW", "VznamkaCHEVROLET", "VznamkaCITROEN",  
+                    "VznamkaDACIA", "VznamkaFIAT", "VznamkaFORD", "VznamkaHONDA",    
+                    "VznamkaHYUNDAI", "VznamkaKIA", "VznamkaMAZDA",    
+                    "VznamkaMERCEDESBENZ", "VznamkaNISSAN", "VznamkaOPEL", "VznamkaPEUGEOT",
+                    "VznamkaRENAULT", "VznamkaSEAT", "VznamkaSKODA", "VznamkaSUZUKI", "VznamkaTOYOTA",
+                    "VznamkaVOLKSWAGEN", "VznamkaVOLVO", "ScrnalistaDA", "Sstodobritev", "DcrnalistaDA",                        
+                    "Dstpogodb", "Vletnik", "Vmpc", "Veurotax", "Lpolog", "Lobrestnamera", "Splacilniindeks",                     
+                    "Szapadloneplacano", "Sobligo", "Ltrajanjemeseci", "Snetoplaca", "Srazpolozljivodzmalicoinprevozom",
+                    "Sstarost", "StrajanjezaposlitveDOLOCENCAS", "StrajanjezaposlitveNEDOLOCENCAS",    
+                    "SpostaSI1", "SpostaSI2", "SpostaSI3", "SpostaSI4", "SpostaSI5", "SpostaSI6", "SpostaSI8", "SpostaSI9",                           
+                    "SdrzavljanstvoBIH", "SdrzavljanstvoSLOVENIA", "SDtipGOSPDRUzBSPji", "SDtipJAVNISEKTORUPOKOJENCI",         
+                    "SDstzaposlenih", "SDdobaposlovanja", "SDprihodki", "SDodstotekkapitalavbilancnivsoti",
+                    "SDposlovniizid", "SDblokadaracunaDA", "SDinsolventnostDA", "SDcrnalistaDA", "SmanjkaI1", "Lodobren")
   return(data)
 }
 
 ######### popravi razmerje ciljne spremenljivke #########
 popraviY <- function(trainData) {
-  # razmerje "DA": 60%, "NE": 40% preoblikuj na vsaj "DA": 55%, "NE": 45%
+  # razmerje "DA": 60%, "NE": 40%
+  # preoblikuj na "DA": 48%, "NE": 52%
   trainData$Lodobren <- as.factor(trainData$Lodobren)
   trainData <- DMwR::SMOTE(Lodobren~.,trainData,k=5,
-                           perc.over = 30,perc.under=400)
+                           perc.over = 30, perc.under=400)
+  # za vsakega iz manjšinskega razreda doda še 30/100 novih
+  # za vsakega na novo zgeneriranega iz manjšinskega razreda vzame 400/100 primerkov iz večinskega
+  # torej (0: 2383; 1: 3679) -> (0: 3097; 1: 2856)
   return(trainData)
 }
 

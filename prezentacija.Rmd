@@ -1,73 +1,51 @@
 ---
-title: "Seminarska naloga pri predmetu Izbrane teme iz analize podatkov"
+title: "Finančni zakup vozil (lizing)"
 author: "Anže Marinko"
+date: 2. julij 2015
 output: html_document
 ---
 
-# Finančni zakup vozil (lizing)
-
-Sem Anže Marinko, študent 3. letnika finančne matematike na Fakulteti za matematiko in fiziko na Univerzi v Ljubljani. Pri tem projektu bom analiziral tveganje finančnega zakupa (lizing) vozil. Projekt sem naredil v okviru predmeta Izbrane teme iz analize podatkov.
+Sem Anže Marinko, študent 3. letnika finančne matematike na Fakulteti za matematiko in fiziko na Univerzi v Ljubljani. V tem potočilu bom predstavil svoje rezultate napovedovanja tveganja finančnega zakupa (lizing) vozil. Seminarsko nalogo sem naredil v okviru predmeta Izbrane teme iz analize podatkov.
 
 ***
 
 ## Podatkovna množica
 
-Učna podatkovna množica vsebuje 6.062 predmetov zakupa (leasinga) vozil, ki jih je leta 2015 obravnavalo izbrano leasing podjetje v Sloveniji. Vsak predmet je opisan z enaintridesetimi (31) spremenljivkami, ki se nanašajo na lastnosti stranke (S), njenega delodajalca (SD), leasing predmeta (L), vozila (V) in njegovega dobavitelja (D):
-
-(1) Lodobren (Boolova, ciljna): predmet je bil odobren in s stranko je bila sklenjena pogodba o zakupu;
-(2) Vznamka (kvalitativna, 48 možnih vrednosti): znamka vozila za zakup;
-(3) Scrna_lista (Boolova): stranka je na črni listi neplačnikov;
-(4) Sst_odobritev (kvantitativna, rang 0-28): število leasing pogodb, ki so stranki bile odobrene v preteklosti;
-(5) Dcrna_lista (Boolova): dobavitelj vozila je na črni listi dobaviteljev;
-(6) Dst_pogodb (kvantitativna, rang 0-): število leasing pogodb, ki so bile v preteklosti sklenjene z dobaviteljem;
-(7) Vletnik (kvantitativna, rang 0-13): letnik oziroma starost vozila v letih (0: novo);
-(8) Vmpc (kvantitativna, rang 1.400-): maloprodajna cena vozila;
-(9) Veurotax (kvantitativna, rang -71-1044): Eurotax ocena razlike med maloprodajno ceno in dejansko vrednostjo vozila;
-(10) Lpolog (kvantitativna, rang 0-87): zahtevan polog, v odstotkih od celotne vrednosti pogodbe;
-(11) Lobrestna_mera (kvantitativna, rang 0-21): pogodbena obrestna mera;
-(12) Splacilni_indeks (kvantitativna, rang 0-, 3.631 neznanih vrednosti): poprečna število dni zamude stranke pri plačevanju zapadlih obveznosti;
-(13) Szapadlo_neplacano (kvantitativna, rang 0-, 3.631 neznanih vrednosti): znesek neplačanih zapadlih obveznosti stranke;
-(14) Sobligo (kvantitativna, rang 892-): znesek tekočih obveznosti stranke, ki izhajajo iz pogodb sklenjenih v preteklosti;
-(15) Ltrajanje_meseci (kvantitativna, rang 6-84): trajanje pogodbe o zakupu v mesecih;
-(16) Sneto_placa (kvantitativna, rang 0-): neto plača stranke;
-(17) Srazpolozljiv_od_z_malico_in_prevozom (kvantitativna, rang -653-): osebni dohodek stranke skupaj z dodatki za malico in prevoz, ki je razpoložljiv za plačilo obveznosti;
-(18) Sstarost (kvantitativna, rang 19-81): starost stranke v letih;
-(19) Strajanje_zaposlitve (kvalitativna, 3 možne vrednosti): zaposlitev stranke (določen ali nedoločen čas, upokojenec);
-(20) Sposta (kvalitativna, 9 možnih vrednosti): poštna številka naslova stranke;
-(21) Sdrzavljanstvo (kvalitativna, 19 možnih vrednosti): državljanstvo stranke;
-(22) Sdrzavljanstvo_eu (Boolova): stranka je državljan države iz Evropske unije;
-(23) SDtip (kvalitativna, 4 možne vrednosti): tip delodajalca stranke (podjetje ali organizacija javnega sektorja, upokojenec, zasebnik, ostalo in tujna);
-(24) SDst_zaposlenih (kvantitativna, rang 0-): število zaposlenih delodajalca;
-(25) SDdoba_poslovanja (kvantitativna, rang 0-): doba poslovanja delodajalca v letih;
-(26) SDprihodki (kvantitativna, rang 0-): prihodki delodajalca;
-(27) SDodstotek_kapitala_v_bilancni_vsoti (kvantitativna, rang -1664-100): odstotek kapitala v bilančni vsoti delodajalca;
-(28) SDposlovni_izid (kvantitativna): poslovni izid delodajalca;
-(29) SDblokada_racuna (Boolova): račun delodajalca stranke je blokiran;
-(30) SDinsolventnost (Boolova): delodajalec stranke je insolventen;
-(31) SDcrna_lista (Boolova): delodajalec stranke je na črni listi neplačnikov.
+Učna podatkovna množica vsebuje 6.062 predmetov zakupa (leasinga) vozil, ki jih je leta 2015 obravnavalo izbrano leasing podjetje v Sloveniji. Vsak predmet je opisan z 31 spremenljivkami, ki se nanašajo na lastnosti stranke, njenega delodajalca, leasing predmeta, vozila in njegovega dobavitelja. Ciljna spremenljivka je *Lodobren*.
 
 
 ```{r uvoz, echo=FALSE, message=FALSE, warning=FALSE}
 source("analiza-podatkov/napovedovanje.r", encoding = "UTF-8")
 ```
 
-Nekaj o podatkih (manjkajočih, porazdelitvi ciljne spremenljivke ...)
+## Transformacija podatkov
+Uvozil sem učne in testne podatke, jih normaliziral po stolpcih (tu pride do polnadzorovanega učenja) in ugotovil, da podatki manjkajo pri *Splacilni_indeks* in *Szapadlo_neplacano*, kjer manjka 60% podatkov (enako tudi pri testnih podatkih). Ker pa so v obeh stolpcih manjkajoči podatki na istih mestih, sem dodal le en stolpec z enicami na tistih mestih in ničlami sicer, manjkajoče podatke pa sem nadomestil s povprečjem stolpca.
 
+Nato sem namesto diskretnih spremenljivk dodal naivne spremenljivke (spremenljivka *Vznamka* je imela sprva 48 možnosti), spremenljivke z majhno varianco sem odstranil (veliko znamk vozil je imelo namreč le po nekaj pojavitev v stolpcu *Vznamka*).
 
-```{r razpredelnice, echo=FALSE, message=FALSE, warning=FALSE}
-head(trainData)
+Ciljna spremenljivka je bila sprva porazdeljena (*DA*: 60%; *NE*: 40%), zato sem prevzorčil (*pre=30*) in podvzorčil (*pod=400*). Tako sem dobil 3097 (2383 x 1.3) *NE* in 2856 (2383 x 0.3 x 4) *DA*, torej razmerje 48:52.
+
+Zdaj ima učna množica 61 napovednih spremenljivk in 5953 primerov.
+
+Oglejmo si nekaj izbranih primerov pri nekaj izbranih spremenljivkah (numerične spremenljivke so normalizirane in pomnožene s 1000):
+
+```{r razpredelnica, echo=FALSE, message=FALSE, warning=FALSE}
+trainData[c(1:5,5001:5005),
+               c("VznamkaBMW","VznamkaCITROEN",
+                  "VznamkaPEUGEOT","Dstpogodb",
+                  "Snetoplaca", "Sstarost","Lodobren")]
 ```
-
-## Relevantnost napovednih spremenljivk
 
 
 ***
 
 ## Grajenje modelov
 
-Zgradite napovedni model, ki napoveduje ali bo za lizing predmet sklenjena pogodba ali ne. Pri merjenju in poročanju napake napovednega modela upoštevajte razlike med različnimi vrstami napovednih napak, saj izpad dohodkov zaradi nesklenjene dobre pogodbe je lahko drugačen od stroškov, ki nastanejo zaradi slabo sklenjene pogodbe zakupa. Upoštevajte tudi neenakomerno porazdelitev primerov v razrede, kjer je več kot 60% primerov bilo odobrenih.
-
 Razlika med napakami tipa FP in FN!
+
+```{r rferr, echo=FALSE, message=FALSE, warning=FALSE}
+plot(finalModel,title="Random forest model")
+```
 
 ## Predstavitev in napovedi končnega modela
 
@@ -75,5 +53,6 @@ Poleg poročila o tem, kako ste zgradili napovedni model, za izbrani, najboljši
 
 # Zaključek
 
+ooo
 
 ***
