@@ -16,13 +16,11 @@ testY <- data.frame(Lodobren=testY)
 write.csv(testY,
           quote=FALSE,
           row.names=FALSE,
-          col.names=FALSE,
           file="napovedi-zakupov.csv",
           fileEncoding = "UTF-8")
-
+# read.csv("napovedi-zakupov.csv", fileEncoding = "UTF-8")
 
 ####### konec programa ############
 # print(data.frame(x=c("   Od zacetka do konca izvajanja",
 #                      "programa je minilo",
 #                      paste(Sys.time()-t,"minut."))))
-# za svm in rf 51.2585178693136 minut.

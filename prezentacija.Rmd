@@ -1,5 +1,5 @@
 ---
-title: "Finančni zakup vozil (lizing)"
+title: "Finančni zakup (lizing) vozil"
 author: "Anže Marinko"
 date: 2. julij 2015
 output: html_document
@@ -18,7 +18,7 @@ Učna podatkovna množica vsebuje 6.062 predmetov zakupa (leasinga) vozil, ki ji
 source("analiza-podatkov/napovedovanje.r", encoding = "UTF-8")
 ```
 
-## Transformacija podatkov
+### Transformacija podatkov
 Uvozil sem učne in testne podatke, jih normaliziral po stolpcih (tu pride do polnadzorovanega učenja) in ugotovil, da podatki manjkajo pri *Splacilni_indeks* in *Szapadlo_neplacano*, kjer manjka 60% podatkov (enako tudi pri testnih podatkih). Ker pa so v obeh stolpcih manjkajoči podatki na istih mestih, sem dodal le en stolpec z enicami na tistih mestih in ničlami sicer, manjkajoče podatke pa sem nadomestil s povprečjem stolpca.
 
 Nato sem namesto diskretnih spremenljivk dodal naivne spremenljivke (spremenljivka *Vznamka* je imela sprva 48 možnosti), spremenljivke z majhno varianco sem odstranil (veliko znamk vozil je imelo namreč le po nekaj pojavitev v stolpcu *Vznamka*).
@@ -33,26 +33,51 @@ Oglejmo si nekaj izbranih primerov pri nekaj izbranih spremenljivkah (numerične
 trainData[c(1:5,5001:5005),
                c("VznamkaBMW","VznamkaCITROEN",
                   "VznamkaPEUGEOT","Dstpogodb",
-                  "Snetoplaca", "Sstarost","Lodobren")]
+                  "Snetoplaca", "Sstarost","SdrzavljanstvoSLOVENIA","Lodobren")]
 ```
 
 
 ***
 
 ## Grajenje modelov
+Zgradil sem več modelov, ki sem jih ocenjeval tako, da sem napaki druge stopnje dal dvojno težo, torej sem minimiziral *FN / (TP + FN) + 2 x FP / (TN + FP)*, saj se mi zdi sklenjena slaba pogodba v tem primeru slabša od nesklenjene dobre.
+(*T*-true, *F*-false, *P*-positive, *N*-negative)
 
-Razlika med napakami tipa FP in FN!
+Modele sem treniral s sedemkratnim prečnim preverjanjem.
 
-```{r rferr, echo=FALSE, message=FALSE, warning=FALSE}
-plot(finalModel,title="Random forest model")
+### Modeli
+Oglejmo si cene napak za nekaj modelov:
+
+#### SVM 
+*Tu sem zaradi časovne zahtevnosti opravil le pet prečnih preverjanj.*
+```{r svm, echo=FALSE, message=FALSE, warning=FALSE}
+svmM$results
+plot(svmM)
 ```
 
-## Predstavitev in napovedi končnega modela
+#### Random Forest
+```{r rf, echo=FALSE, message=FALSE, warning=FALSE}
+rfM$results
+plot(rfM)
+```
 
-Poleg poročila o tem, kako ste zgradili napovedni model, za izbrani, najboljši napovedni model oddajte njegove napovedi ciljne spremenljivke na testni množici podatkov. To naj bo (csv) tabela z enim stolpcem, ki podaja napovedi v enakem vrstnem redu kot so razvrščeni primeri v testni množici. Oddana tabela lahko vsebuje tudi drugi stolpec, ki napove verjetnost sklenitve pogodbe za podan testni primer.
+#### KNN
+```{r knn, echo=FALSE, message=FALSE, warning=FALSE}
+knnM$results
+plot(knnM)
+```
 
-# Zaključek
-
-ooo
+#### GLM
+```{r glm, echo=FALSE, message=FALSE, warning=FALSE}
+glmM$results
+```
 
 ***
+### Predstavitev in napovedi končnega modela
+Glede na to mero je očitno najboljši model *random forest*, ki sem ga naučil na 100 drevesih z 10, 15 in 20 ponavljanji. Napovedi zakupov za testno množico so v naslednjem razmerju:
+```{r testY, echo=FALSE, message=FALSE, warning=FALSE}
+summary(testY)
+```
+
+***
+
